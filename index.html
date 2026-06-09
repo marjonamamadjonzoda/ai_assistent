@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Мой ИИ_ассистент </title>
+        <style>
+            body{ font-family: Arial, san-serif;marjin:20px;}
+            .chat-box-box{border: 1px solid #ccc; padding:10px; height: 300px; overflow-y:scroll;}
+            input,button{padding:8px; marji:5px;}
+        </style>
+
+</head>
+
+<body>
+    <h1>Мой персональный ИИ_ассистент</h1>
+<div class="chat-box" id="chatBox">
+    <div>Ассистент: Привет! Чем могу помочь?</div>
+</div>
+
+<input type="text" id="userInput" placeholder="Задайте вопрос..." style="width: 70%;">
+       <button onclick="sendMessage()"> Отправить</button>
+<script>
+    function sendMessage(){
+    const input = document.getElementById('userInput');
+    const message = input.value;
+    if(!message) return;
+    document.getElementById('chatBox').innerHTML += `<div> Вы: ${message}</>div>`;
+    input.value = '';
+    fetch('/ask',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({question:message})
+    });
+    }
+
+    document.getElementById('userInput').addEventListener('keypress',function(e){
+    if (e.key === 'Enter') sendMessage();
+    });
+</script>
+</body>
+</html>
