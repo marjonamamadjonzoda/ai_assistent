@@ -143,8 +143,18 @@ if __name__ == "__main__":
     print("http://127.0.0.1:5000")
     print("================================")
 
-    app.run(
+    app.run( 
         host="127.0.0.1",
         port=5000,
         debug=True
     )
+
+/*4. Отправляем запрос...
+ОШИБКА GIGACHAT:
+ConnectError
+[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1081)
+Возвращаем ответ браузеру: Ошибка GigaChat: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1081)
+127.0.0.1 - - [26/Aug/2026 21:10:05] "POST /ask HTTP */
+[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1081)
+Возвращаем ответ браузеру: Ошибка GigaChat: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1081)
+127.0.0.1 - - [26/Aug/2026 21:10:05] "POST /ask HTTP 
