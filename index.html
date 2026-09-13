@@ -2,324 +2,77 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Emy — Персональный AI-ассистент</title>
-
+    <title>Мой ИИ-ассистент</title>
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
         body {
-            margin: 0;
             font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            color: #222;
+            margin: 20px;
         }
-
-        .container {
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-
-        h1 {
-            text-align: center;
+        .chat-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
             margin-bottom: 10px;
         }
-
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 25px;
-        }
-
-        .chat-box {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            padding: 15px;
-            height: 450px;
-            overflow-y: auto;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .message {
-            margin-bottom: 15px;
-            padding: 10px 14px;
-            border-radius: 10px;
-            line-height: 1.5;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-
-        .user-message {
-            background: #e8f0fe;
-            text-align: right;
-        }
-
-        .assistant-message {
-            background: #f1f1f1;
-            text-align: left;
-        }
-
-        .input-area {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        #userInput {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 16px;
-            outline: none;
-        }
-
-        #userInput:focus {
-            border-color: #777;
-        }
-
+        input,
         button {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            background: #333;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #555;
-        }
-
-        button:disabled {
-            background: #aaa;
-            cursor: not-allowed;
-        }
-
-        .status {
-            text-align: center;
-            color: #777;
-            font-size: 14px;
-            margin-top: 10px;
-            min-height: 20px;
+            padding: 8px;
+            margin: 5px;
         }
     </style>
 </head>
-
 <body>
-
-<div class="container">
-
-    <h1>🤖 Emy</h1>
-
-    <div class="subtitle">
-        Мой персональный AI-ассистент
-    </div>
-
+    <h1>Мой персональный ИИ-ассистент</h1>
     <div class="chat-box" id="chatBox">
-
-        <div class="message assistant-message">
-            <strong>Emy:</strong>
-            Привет! Я Emy. Чем могу помочь?
-        </div>
-
+        <div>Ассистент: Привет! Чем могу помочь?</div>
     </div>
-
-    <div class="input-area">
-
-        <input
-            type="text"
-            id="userInput"
-            placeholder="Задайте вопрос..."
-            autocomplete="off"
-        >
-
-        <button id="sendButton" onclick="sendMessage()">
-            Отправить
-        </button>
-
-    </div>
-
-    <div class="status" id="status"></div>
-
-</div>
-
-
-<script>
-
-    async function sendMessage() {
-
-        const input = document.getElementById("userInput");
-        const chatBox = document.getElementById("chatBox");
-        const sendButton = document.getElementById("sendButton");
-        const status = document.getElementById("status");
-
-        const message = input.value.trim();
-
-        // Если пользователь ничего не написал
-        if (!message) {
-            return;
-        }
-
-        // Показываем сообщение пользователя
-        const userMessage = document.createElement("div");
-
-        userMessage.className = "message user-message";
-
-        const userName = document.createElement("strong");
-        userName.textContent = "Вы: ";
-
-        const userText = document.createElement("span");
-        userText.textContent = message;
-
-        userMessage.appendChild(userName);
-        userMessage.appendChild(userText);
-
-        chatBox.appendChild(userMessage);
-
-        // Очищаем поле
-        input.value = "";
-
-        // Блокируем кнопку во время запроса
-        sendButton.disabled = true;
-
-        status.textContent = "Emy думает...";
-
-        // Прокручиваем чат вниз
-        chatBox.scrollTop = chatBox.scrollHeight;
-
-
-        try {
-
-            // Отправляем вопрос Flask
-            const response = await fetch("/ask", {
-
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify({
-                    message: message
-                })
-
-            });
-
-
-            // Проверяем HTTP-ответ
-            if (!response.ok) {
-
-                throw new Error(
-                    "Ошибка сервера: HTTP " + response.status
-                );
-
+    <input
+        type="text"
+        id="userInput"
+        placeholder="Задайте вопрос..."
+        style="width: 70%;"
+    >
+    <button onclick="sendMessage()">Отправить</button>
+    <script>
+        async function sendMessage() {
+            const input = document.getElementById("userInput");
+            const chatBox = document.getElementById("chatBox");
+            const message = input.value.trim();
+            if (!message) {
+                return;
             }
-
-
-            // Получаем JSON от Flask
-            const data = await response.json();
-
-
-            // Создаём сообщение Emy
-            const assistantMessage =
-                document.createElement("div");
-
-            assistantMessage.className =
-                "message assistant-message";
-
-
-            const assistantName =
-                document.createElement("strong");
-
-            assistantName.textContent = "Emy: ";
-
-
-            const assistantText =
-                document.createElement("span");
-
-            assistantText.textContent =
-                data.answer || "Emy не получила ответ.";
-
-
-            assistantMessage.appendChild(assistantName);
-            assistantMessage.appendChild(assistantText);
-
-            chatBox.appendChild(assistantMessage);
-
-
-            // Прокручиваем чат вниз
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-
-        } catch (error) {
-
-            // Показываем ошибку
-            const errorMessage =
-                document.createElement("div");
-
-            errorMessage.className =
-                "message assistant-message";
-
-
-            const errorName =
-                document.createElement("strong");
-
-            errorName.textContent = "Ошибка: ";
-
-
-            const errorText =
-                document.createElement("span");
-
-            errorText.textContent =
-                error.message;
-
-
-            errorMessage.appendChild(errorName);
-            errorMessage.appendChild(errorText);
-
-            chatBox.appendChild(errorMessage);
-
-            console.error(error);
-
-        } finally {
-
-            // Разблокируем кнопку
-            sendButton.disabled = false;
-
-            // Убираем статус
-            status.textContent = "";
-
-            // Возвращаем фокус в поле
-            input.focus();
-
+            // Показываем сообщение пользователя
+            chatBox.innerHTML += `<div><b>Вы:</b> ${message}</div>`;
+            // Очищаем поле
+            input.value = "";
+            try {
+                const response = await fetch("/ask", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        question: message
+                    })
+                });
+                const data = await response.json();
+                // Показываем ответ ассистента
+                chatBox.innerHTML += `<div><b>Ассистент:</b> ${data.answer}</div>`;
+                // Прокручиваем чат вниз
+                chatBox.scrollTop = chatBox.scrollHeight;
+            } catch (error) {
+                chatBox.innerHTML +=
+                    `<div><b>Ошибка:</b> Не удалось получить ответ от сервера.</div>`;
+                console.error(error);
+            }
         }
-
-    }
-
-
-    // Отправка сообщения клавишей Enter
-    document
-        .getElementById("userInput")
-        .addEventListener("keydown", function(event) {
-
+        // Отправка по Enter
+        document.getElementById("userInput").addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
-
-                event.preventDefault();
-
                 sendMessage();
-
             }
-
         });
-
-</script>
-
+    </script>
 </body>
 </html>
