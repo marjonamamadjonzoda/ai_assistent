@@ -6,6 +6,7 @@ os.environ["REQUESTS_CA_BUNDLE"] = certifi.where()
 
 from flask import Flask, render_template, request, jsonify
 from gigachat import GigaChat
+from gigachat.models import Chat, Messages
 from dotenv import load_dotenv
 import os
 
@@ -56,12 +57,13 @@ def ask_emy(user_message):
                 "GIGACHAT_SCOPE",
                 "GIGACHAT_API_PERS"
             ),
-            model="GigaChat-3-Ultra"
+            model="GigaChat-3-Ultra",
+            verify_ssl_certs=False
         ) as giga:
 
             print("4. Отправляем запрос...")
 
-            response = giga.chat(messages)
+            response = giga.chat(Chat(messages=messages))
 
             print("5. Ответ получен!")
 
