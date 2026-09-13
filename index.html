@@ -153,155 +153,25 @@
 
 <script>
 
-    async function sendMessage() {
-
-        const input = document.getElementById("userInput");
-        const chatBox = document.getElementById("chatBox");
-        const sendButton = document.getElementById("sendButton");
-        const status = document.getElementById("status");
-
-        const message = input.value.trim();
-
-        // Если пользователь ничего не написал
-        if (!message) {
-            return;
-        }
-
-        // Показываем сообщение пользователя
-        const userMessage = document.createElement("div");
-
-        userMessage.className = "message user-message";
-
-        const userName = document.createElement("strong");
-        userName.textContent = "Вы: ";
-
-        const userText = document.createElement("span");
-        userText.textContent = message;
-
-        userMessage.appendChild(userName);
-        userMessage.appendChild(userText);
-
-        chatBox.appendChild(userMessage);
-
-        // Очищаем поле
-        input.value = "";
-
-        // Блокируем кнопку во время запроса
-        sendButton.disabled = true;
-
-        status.textContent = "Emy думает...";
-
-        // Прокручиваем чат вниз
-        chatBox.scrollTop = chatBox.scrollHeight;
-
-
-        try {
-
-            // Отправляем вопрос Flask
-            const response = await fetch("/ask", {
-
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify({
-                    message: message
-                })
-
-            });
-
-
-            // Проверяем HTTP-ответ
-            if (!response.ok) {
-
-                throw new Error(
-                    "Ошибка сервера: HTTP " + response.status
-                );
-
-            }
-
-
-            // Получаем JSON от Flask
-            const data = await response.json();
-
-
-            // Создаём сообщение Emy
-            const assistantMessage =
-                document.createElement("div");
-
-            assistantMessage.className =
-                "message assistant-message";
-
-
-            const assistantName =
-                document.createElement("strong");
-
-            assistantName.textContent = "Emy: ";
-
-
-            const assistantText =
-                document.createElement("span");
-
-            assistantText.textContent =
-                data.answer || "Emy не получила ответ.";
-
-
-            assistantMessage.appendChild(assistantName);
-            assistantMessage.appendChild(assistantText);
-
-            chatBox.appendChild(assistantMessage);
-
-
-            // Прокручиваем чат вниз
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-
-        } catch (error) {
-
-            // Показываем ошибку
-            const errorMessage =
-                document.createElement("div");
-
-            errorMessage.className =
-                "message assistant-message";
-
-
-            const errorName =
-                document.createElement("strong");
-
-            errorName.textContent = "Ошибка: ";
-
-
-            const errorText =
-                document.createElement("span");
-
-            errorText.textContent =
-                error.message;
-
-
-            errorMessage.appendChild(errorName);
-            errorMessage.appendChild(errorText);
-
-            chatBox.appendChild(errorMessage);
-
-            console.error(error);
-
-        } finally {
-
-            // Разблокируем кнопку
-            sendButton.disabled = false;
-
-            // Убираем статус
-            status.textContent = "";
-
-            // Возвращаем фокус в поле
-            input.focus();
-
-        }
-
-    }
+   async function sendMessage(){
+    const input = document.getElementById('userInput');
+    const message = input.value;
+    if(!message) return;
+    document.getElementById('chatBox').innerHTML += `<div>Вы: ${message}</div>`;
+    input.value = '';
+    fetch('/ask',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({message: message})
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('chatBox').innerHTML += `<div>Ассистент: ${data.answer}</div>`;
+    })
+    .catch(error => {
+        document.getElementById('chatBox').innerHTML += `<div>Ошибка: ${error}</div>`;
+    });
+}
 
 
     // Отправка сообщения клавишей Enter
